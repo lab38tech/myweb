@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Conferma Invio</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .confirmation-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .preview-item {
+            text-align: center;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .preview-thumbnail {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .preview-name {
+            font-size: 0.8em;
+            margin-top: 8px;
+            word-break: break-word;
+            color: #666;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 2rem;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="success-message">
+            <h2>✅ Selezione Confermata!</h2>
+            <p>Le seguenti {{ count }} immagini verranno inviate:</p>
+        </div>
+
+        <div class="preview-grid">
+            {% for img in selected_images %}
+            <div class="preview-item">
+                <img src="{{ url_for('drive_proxy', file_id=img.id) }}" 
+                     class="preview-thumbnail"
+                     alt="{{ img.name }}">
+                <div class="preview-name">{{ img.name }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="/gallery" class="back-btn">Modifica Selezione</a>
+            <form action="/send_email" method="POST" style="display: inline-block; margin-left: 1rem;">
+                <button type="submit" class="submit-btn">Conferma e Invia</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

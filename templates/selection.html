@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Riepilogo Selezione</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .selection-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .selection-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .preview-item {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .preview-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .preview-name {
+            padding: 10px;
+            font-size: 0.85em;
+            text-align: center;
+            color: #666;
+            word-break: break-word;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .confirm-btn {
+            background: #28a745;
+            color: white;
+            padding: 12px 40px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #2196F3;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="selection-container">
+        <div class="selection-header">
+            <h2>Riepilogo delle Immagini Selezionate</h2>
+            <p>Verifica le immagini prima di inviare</p>
+        </div>
+
+        <div class="preview-grid">
+            {% for img in selected_images %}
+            <div class="preview-item">
+                <img src="{{ url_for('drive_proxy', file_id=img.id) }}" 
+                     class="preview-image" 
+                     alt="{{ img.name }}">
+                <div class="preview-name">{{ img.name }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="actions">
+            <form action="/send_email" method="POST">
+                <button type="submit" class="confirm-btn">Conferma e Invia</button>
+            </form>
+            <a href="/gallery" class="back-link">← Torna indietro per modificare</a>
+        </div>
+    </div>
+</body>
+</html>
