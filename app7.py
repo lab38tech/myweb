@@ -24,7 +24,27 @@ mail = Mail(app)
 
 # Configurazione Google Drive
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
-SERVICE_ACCOUNT_FILE = os.path.join(os.path.dirname(__file__), 'credentials.json')
+
+# URL del file JSON
+url = 'https://www.lab38.it/credentials.json'
+
+# Leggi il file JSON da remoto
+response = requests.get(url)
+
+# Verifica che la richiesta sia andata a buon fine
+if response.status_code == 200:
+    # Carica il file JSON direttamente in memoria
+    credentials_data = response.json()
+
+    # Usa le credenziali direttamente in memoria
+    creds = service_account.Credentials.from_service_account_info(
+        credentials_data,
+        scopes=SCOPES
+    )
+else:
+    logger.error("Errore nel recuperare il file: ", response.status_code)
+    creds = None
+
 USERS_CSV = 'users.csv'
 
 # Configurazione logging
@@ -60,10 +80,6 @@ def save_users(users):
 
 def get_drive_images(folder_id):
     try:
-        creds = service_account.Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_FILE,
-            scopes=SCOPES
-        )
         service = googleapiclient.discovery.build('drive', 'v3', credentials=creds)
         
         results = service.files().list(
